@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronRight, PackageCheck, RotateCcw, Truck } from 'lucide-react';
 import { Container } from '@/components/ui';
-import { ProductImage } from '@/components/ProductArt';
+import { Gallery } from '@/components/product/Gallery';
 import { PurchasePanel } from '@/components/product/PurchasePanel';
 import { ProductGrid } from '@/components/product/ProductCard';
 import { categoryName } from '@/lib/catalog';
@@ -55,23 +55,11 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <div className="grid gap-8 pt-6 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
-        <div className="animate-rise">
-          <div className="overflow-hidden rounded-2xl border border-line-subtle bg-surface">
-            <ProductImage product={product} className="aspect-[16/15]" />
-          </div>
-          {product.images.length > 1 && (
-            <div className="mt-3 grid grid-cols-4 gap-3">
-              {product.images.slice(1, 5).map((src) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={src} src={src} alt="" className="aspect-square rounded-lg object-cover" />
-              ))}
-            </div>
-          )}
-        </div>
+        <Gallery images={product.images} name={product.name} brand={product.brand} />
 
-        <div className="animate-rise [animation-delay:80ms] lg:sticky lg:top-24 lg:self-start">
+        <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="text-sm font-semibold text-fg-muted">{product.brand}</p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight sm:text-4xl">{product.name}</h1>
+          <h1 className="mt-1 text-[1.9rem] font-extrabold leading-[1.1] tracking-[-0.02em] sm:text-[2.25rem]">{product.name}</h1>
           <p className="mt-3 text-fg-secondary">{product.summary}</p>
           <div className="mt-6">
             <PurchasePanel product={product} />

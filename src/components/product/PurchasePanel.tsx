@@ -14,7 +14,6 @@ interface Props {
     slug: string;
     name: string;
     brand: string;
-    art: string;
     images: string[];
     buyPrice: number | null;
     compareAtPrice: number | null;
@@ -43,7 +42,7 @@ export function PurchasePanel({ product }: Props) {
     quantity,
     startDate: mode === 'rent' ? startDate : undefined,
     endDate: mode === 'rent' ? endDate : undefined,
-    snapshot: { name: product.name, slug: product.slug, brand: product.brand, art: product.art },
+    snapshot: { name: product.name, slug: product.slug, brand: product.brand, image: product.images[0] },
   };
   const { quote, error, loading } = useQuote([line]);
   const priced = quote?.lines[0];
@@ -57,7 +56,7 @@ export function PurchasePanel({ product }: Props) {
       quantity,
       startDate: line.startDate,
       endDate: line.endDate,
-      snapshot: { ...line.snapshot, image: product.images[0] },
+      snapshot: line.snapshot,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);

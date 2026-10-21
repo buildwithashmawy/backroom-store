@@ -10,7 +10,7 @@ export interface CartLine {
   quantity: number;
   startDate?: string;
   endDate?: string;
-  snapshot: { name: string; slug: string; brand: string; art: string; image?: string };
+  snapshot: { name: string; slug: string; brand: string; image?: string };
 }
 
 interface CartState {

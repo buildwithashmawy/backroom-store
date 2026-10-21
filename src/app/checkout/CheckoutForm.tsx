@@ -6,7 +6,7 @@ import { Lock, Loader2 } from 'lucide-react';
 import { useCart } from '@/components/cart/CartProvider';
 import { useQuote } from '@/components/cart/useQuote';
 import { formatRange } from '@/lib/format';
-import { ProductArt } from '@/components/ProductArt';
+import { ProductPhoto } from '@/components/ProductPhoto';
 import { Button, buttonClass } from '@/components/ui';
 import { PaymentMarks } from '@/components/layout/Footer';
 import { formatEGP, shippingFee } from '@/lib/pricing';
@@ -186,8 +186,8 @@ export function CheckoutForm() {
             const p = quote?.lines[i];
             return (
               <li key={l.key} className="flex gap-3">
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-surface">
-                  <ProductArt art={l.snapshot.art} label="" className="h-full w-full" />
+                <div className="relative h-14 w-14 shrink-0">
+                  <ProductPhoto src={l.snapshot.image} alt="" className="h-full w-full rounded-md" padding="p-1" />
                   <span className="absolute -right-0 -top-0 grid h-5 min-w-5 place-items-center rounded-bl-md bg-muted px-1 text-[11px] font-bold">
                     {l.quantity}
                   </span>

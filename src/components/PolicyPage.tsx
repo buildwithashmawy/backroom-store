@@ -13,7 +13,7 @@ const links = [
 export function PolicyPage({ title, intro, current, children }: { title: string; intro?: string; current: string; children: React.ReactNode }) {
   return (
     <Container>
-      <PageHeader eyebrow="Policies" title={title} intro={intro} />
+      <PageHeader title={title} intro={intro} />
       <div className="grid gap-10 py-10 lg:grid-cols-[220px_1fr]">
         <nav className="hidden lg:block" aria-label="Policies">
           <ul className="sticky top-24 space-y-1">

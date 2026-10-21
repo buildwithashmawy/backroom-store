@@ -1,165 +1,178 @@
 import Link from 'next/link';
-import { ArrowRight, CalendarDays, CreditCard, ShieldCheck, Truck, Wrench } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { ButtonLink, Container } from '@/components/ui';
-import { ProductArt } from '@/components/ProductArt';
+import { ProductPhoto } from '@/components/ProductPhoto';
 import { ProductGrid } from '@/components/product/ProductCard';
-import { categories, rentalDiscounts } from '@/lib/catalog';
+import { categories, freeShippingThreshold, rentalDiscounts, shippingMethods } from '@/lib/catalog';
+import { formatEGP } from '@/lib/pricing';
 import { listProducts } from '@/lib/products';
 import { site } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
-const categoryArt: Record<string, string> = {
-  cameras: 'cinema-camera',
-  lenses: 'lens',
-  lighting: 'light-cob',
-  audio: 'wireless',
-  grip: 'gimbal',
-  drones: 'drone',
-  monitors: 'monitor',
-  accessories: 'battery',
-};
-
 export default async function HomePage() {
   const products = await listProducts();
-  const featured = products.filter((p) => p.featured).slice(0, 8);
+  const lead = products.find((p) => p.slug === 'sony-fx3') ?? products[0];
+  const rest = products.filter((p) => p.slug !== lead?.slug);
+  const featured = [...rest.filter((p) => p.featured), ...rest.filter((p) => !p.featured)].slice(0, 8);
+  const byCategory = categories.map((c) => {
+    const items = products.filter((p) => p.category === c.slug);
+    const dayRates = items.map((p) => p.rentPricePerDay).filter((v): v is number => v != null);
+    return { ...c, count: items.length, fromRate: dayRates.length ? Math.min(...dayRates) : null };
+  });
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_20%,rgba(87,180,229,0.16),transparent_70%)]" />
-        <Container className="relative grid items-center gap-10 pb-16 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pb-24 lg:pt-16">
-          <div className="animate-rise">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3.5 py-1.5 text-xs font-semibold text-fg-secondary">
-              <span className="h-1.5 w-1.5 rounded-full bg-badge-green" /> Delivering across Cairo and Giza
-            </p>
-            <h1 className="text-[2.6rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
-              Production gear.
+      <Container className="grid gap-10 pb-16 pt-10 lg:grid-cols-12 lg:gap-8 lg:pb-24 lg:pt-14">
+        <div className="flex flex-col justify-between lg:col-span-5">
+          <div>
+            <h1 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-[3.5rem]">
+              The kit room,
               <br />
-              <span className="text-fg-secondary">Buy it, or rent it by the day.</span>
+              open online.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg-secondary">
-              Cinema cameras, lenses, lighting, audio and drones from the BackRoom kit room. Every item is checked
-              before it goes out, and you pay securely online.
+            <p className="mt-6 max-w-md text-[17px] leading-relaxed text-fg-secondary">
+              Cameras, glass, lighting and sound from our studio in {site.address.area}. Rent by the day for your next
+              shoot, or buy new with local warranty.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/shop?mode=rent" size="lg">
-                Rent gear <ArrowRight size={18} />
-              </ButtonLink>
-              <ButtonLink href="/shop?mode=buy" size="lg" variant="ghost">
+              <ButtonLink href="/shop?mode=rent">Browse rentals</ButtonLink>
+              <ButtonLink href="/shop?mode=buy" variant="ghost">
                 Shop to buy
               </ButtonLink>
             </div>
           </div>
-          <div className="animate-rise relative [animation-delay:120ms]">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {['cinema-camera', 'light-panel', 'lens', 'drone'].map((art, i) => (
-                <div
-                  key={art}
-                  className={`overflow-hidden rounded-2xl border border-line-subtle ${i % 2 ? 'translate-y-6' : ''}`}
-                >
-                  <ProductArt art={art} label="" className="aspect-[16/15] w-full" />
-                </div>
-              ))}
+          <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-line-subtle pt-6 text-sm">
+            <div>
+              <dt className="text-fg-muted">Items</dt>
+              <dd className="mt-1 text-lg font-bold tabular-nums">{products.length}</dd>
             </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="border-y border-line-subtle bg-bg-secondary">
-        <Container className="grid grid-cols-2 gap-6 py-8 lg:grid-cols-4">
-          {[
-            { icon: CreditCard, title: 'Secure payment', text: 'Cards, Meeza and wallets through Paymob' },
-            { icon: Truck, title: 'Delivery or pickup', text: `Cairo and Giza, or our ${site.address.area} studio` },
-            { icon: Wrench, title: 'Tested kit', text: 'Every item checked before handover' },
-            { icon: ShieldCheck, title: 'Clear policies', text: '14-day returns on unused purchases' },
-          ].map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex gap-3">
-              <Icon size={22} className="mt-0.5 shrink-0 text-accent" strokeWidth={1.8} />
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-sm text-fg-muted">{text}</p>
-              </div>
+            <div>
+              <dt className="text-fg-muted">Week rate</dt>
+              <dd className="mt-1 text-lg font-bold">−{rentalDiscounts[0].percent}%</dd>
             </div>
-          ))}
-        </Container>
-      </section>
-
-      <Container className="pt-20">
-        <SectionTitle title="Shop by category" href="/shop" cta="All gear" />
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          {categories.map((c, i) => (
-            <Link
-              key={c.slug}
-              href={`/shop?category=${c.slug}`}
-              className="animate-rise group relative overflow-hidden rounded-xl border border-line-subtle bg-surface"
-              style={{ animationDelay: `${i * 40}ms` }}
-            >
-              <ProductArt
-                art={categoryArt[c.slug]}
-                label=""
-                className="aspect-[4/3] w-full opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
-                <p className="font-semibold">{c.name}</p>
-                <p className="text-xs text-fg-secondary">{c.blurb}</p>
-              </div>
-            </Link>
-          ))}
+            <div>
+              <dt className="text-fg-muted">Delivery</dt>
+              <dd className="mt-1 text-lg font-bold">Cairo · Giza</dd>
+            </div>
+          </dl>
         </div>
+
+        {lead && (
+          <Link href={`/products/${lead.slug}`} className="group relative lg:col-span-7">
+            <ProductPhoto
+              src={lead.images[0]}
+              alt={lead.name}
+              brand={lead.brand}
+              priority
+              label={false}
+              padding="p-[10%]"
+              className="aspect-[4/3] rounded-lg"
+            />
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-on-tile">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider opacity-60">On the shelf</p>
+                <p className="mt-1 text-lg font-bold leading-tight">{lead.name}</p>
+              </div>
+              <p className="shrink-0 text-right text-sm">
+                {lead.rentPricePerDay != null && (
+                  <>
+                    <span className="font-bold">{formatEGP(lead.rentPricePerDay)}</span> / day
+                  </>
+                )}
+              </p>
+            </div>
+            <ArrowUpRight className="absolute right-5 top-5 text-on-tile opacity-0 transition group-hover:opacity-100" size={22} />
+          </Link>
+        )}
+      </Container>
+
+      <Container>
+        <div className="flex items-baseline justify-between border-b border-line-subtle pb-4">
+          <h2 className="text-xl font-bold tracking-tight">Departments</h2>
+          <Link href="/shop" className="text-sm text-fg-secondary hover:text-fg">
+            All gear
+          </Link>
+        </div>
+        <ul className="grid sm:grid-cols-2">
+          {byCategory.map((c, i) => (
+            <li key={c.slug} className={`border-b border-line-subtle ${i % 2 === 0 ? 'sm:pr-8' : 'sm:border-l sm:pl-8'}`}>
+              <Link href={`/shop?category=${c.slug}`} className="group flex items-center justify-between gap-4 py-5">
+                <span>
+                  <span className="text-lg font-semibold group-hover:underline group-hover:underline-offset-4">{c.name}</span>
+                  <span className="ml-2 text-sm tabular-nums text-fg-muted">{c.count}</span>
+                  <span className="mt-0.5 block text-sm text-fg-muted">{c.blurb}</span>
+                </span>
+                <span className="shrink-0 text-right text-sm text-fg-secondary">
+                  {c.fromRate != null ? (
+                    <>
+                      from <span className="font-semibold text-fg">{formatEGP(c.fromRate)}</span>/day
+                    </>
+                  ) : (
+                    'Buy only'
+                  )}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </Container>
 
       {featured.length > 0 && (
         <Container className="pt-20">
-          <SectionTitle title="Popular on set" href="/shop" cta="Shop all" />
-          <div className="mt-8">
-            <ProductGrid products={featured} />
+          <div className="mb-8 flex items-baseline justify-between">
+            <h2 className="text-xl font-bold tracking-tight">Featured gear</h2>
+            <Link href="/shop?mode=rent" className="text-sm text-fg-secondary hover:text-fg">
+              All rentals
+            </Link>
           </div>
+          <ProductGrid products={featured} />
         </Container>
       )}
 
       <Container className="pt-24">
-        <div className="grid gap-10 rounded-2xl border border-line-subtle bg-bg-secondary p-6 sm:p-10 lg:grid-cols-[1fr_1.4fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-accent">Renting</p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight">Book a kit for your shoot in three steps</h2>
-            <p className="mt-4 text-fg-secondary">
-              Rentals are priced per day. Book {rentalDiscounts[1].minDays} days or more and save{' '}
-              {rentalDiscounts[1].percent}%, or {rentalDiscounts[0].percent}% for a week or longer.
+        <div className="grid gap-10 border-t border-line-subtle pt-10 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <h2 className="text-xl font-bold tracking-tight">Rental rates</h2>
+            <p className="mt-3 text-sm leading-relaxed text-fg-secondary">
+              Every date from pickup to return counts as a day. Longer bookings are discounted automatically at checkout.
             </p>
-            <ButtonLink href="/how-renting-works" variant="ghost" className="mt-6">
+            <Link href="/how-renting-works" className="mt-4 inline-block text-sm font-semibold underline underline-offset-4">
               How renting works
-            </ButtonLink>
+            </Link>
           </div>
-          <ol className="grid gap-4 sm:grid-cols-3">
-            {[
-              { icon: CalendarDays, title: 'Pick your dates', text: 'Choose the gear and the days you need it. Availability is checked live.' },
-              { icon: CreditCard, title: 'Pay online', text: 'Pay the rental securely by card or wallet. You get a confirmation by email.' },
-              { icon: Truck, title: 'Collect and shoot', text: 'Pick up from the studio or get it delivered. Show your ID at handover.' },
-            ].map(({ icon: Icon, title, text }, i) => (
-              <li key={title} className="rounded-xl bg-surface p-5">
-                <div className="flex items-center justify-between">
-                  <Icon size={22} className="text-accent" strokeWidth={1.8} />
-                  <span className="text-sm font-bold text-fg-subtle">0{i + 1}</span>
-                </div>
-                <p className="mt-6 font-semibold">{title}</p>
-                <p className="mt-1.5 text-sm text-fg-secondary">{text}</p>
-              </li>
-            ))}
-          </ol>
+          <table className="w-full text-sm lg:col-span-8">
+            <tbody className="divide-y divide-line-subtle">
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">1 to {rentalDiscounts[1].minDays - 1} days</th>
+                <td className="py-3.5 text-right font-semibold">Day rate</td>
+              </tr>
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">
+                  {rentalDiscounts[1].minDays} to {rentalDiscounts[0].minDays - 1} days
+                </th>
+                <td className="py-3.5 text-right font-semibold">{rentalDiscounts[1].percent}% off</td>
+              </tr>
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">{rentalDiscounts[0].minDays} days or more</th>
+                <td className="py-3.5 text-right font-semibold">{rentalDiscounts[0].percent}% off</td>
+              </tr>
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">Delivery and collection, Cairo and Giza</th>
+                <td className="py-3.5 text-right font-semibold">{formatEGP(shippingMethods.cairo_giza.rentalFee)}</td>
+              </tr>
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">Pickup from the studio</th>
+                <td className="py-3.5 text-right font-semibold">Free</td>
+              </tr>
+              <tr>
+                <th className="py-3.5 text-left font-medium text-fg-secondary">Purchases delivered anywhere in Egypt</th>
+                <td className="py-3.5 text-right font-semibold">Free over {formatEGP(freeShippingThreshold)}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </Container>
     </>
-  );
-}
-
-function SectionTitle({ title, href, cta }: { title: string; href: string; cta: string }) {
-  return (
-    <div className="flex items-end justify-between gap-4">
-      <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h2>
-      <Link href={href} className="flex items-center gap-1.5 text-sm font-semibold text-fg-secondary hover:text-fg">
-        {cta} <ArrowRight size={16} />
-      </Link>
-    </div>
   );
 }

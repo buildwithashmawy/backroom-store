@@ -17,7 +17,6 @@ export default function ContactPage() {
   return (
     <Container>
       <PageHeader
-        eyebrow="Contact"
         title="Talk to the BackRoom team"
         intro="Questions about an order, a rental or a custom kit for your shoot? We usually reply within a few hours on working days."
       />

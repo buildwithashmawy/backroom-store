@@ -22,7 +22,7 @@ const faqs: { q: string; a: React.ReactNode }[] = [
 export default function FaqPage() {
   return (
     <Container className="max-w-4xl">
-      <PageHeader eyebrow="Help" title="Frequently asked questions" />
+      <PageHeader title="Frequently asked questions" />
       <div className="divide-y divide-line-subtle py-6">
         {faqs.map((f) => (
           <details key={f.q} className="group py-5">

@@ -39,7 +39,6 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   return (
     <Container>
       <PageHeader
-        eyebrow="BackRoom Store"
         title={title}
         intro={
           mode === 'rent'

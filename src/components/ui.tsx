@@ -56,10 +56,10 @@ export function Container({ className = '', ...props }: ComponentProps<'div'>) {
 
 export function PageHeader({ eyebrow, title, intro }: { eyebrow?: string; title: string; intro?: React.ReactNode }) {
   return (
-    <div className="animate-rise border-b border-line-subtle pb-10 pt-12 sm:pt-16">
-      {eyebrow && <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-accent">{eyebrow}</p>}
-      <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
-      {intro && <div className="mt-4 max-w-2xl text-base text-fg-secondary sm:text-lg">{intro}</div>}
+    <div className="border-b border-line-subtle pb-8 pt-10 sm:pt-14">
+      {eyebrow && <p className="mb-2 text-sm text-fg-muted">{eyebrow}</p>}
+      <h1 className="text-3xl font-extrabold tracking-[-0.025em] sm:text-[2.75rem] sm:leading-[1.05]">{title}</h1>
+      {intro && <div className="mt-4 max-w-2xl text-[16px] leading-relaxed text-fg-secondary">{intro}</div>}
     </div>
   );
 }

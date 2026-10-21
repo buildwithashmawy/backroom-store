@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { ProductArt } from '../ProductArt';
+import { ProductPhoto } from '../ProductPhoto';
 import { formatEGP, type PricedLine } from '@/lib/pricing';
 import { useCart, type CartLine } from './CartProvider';
 import { formatRange } from '@/lib/format';
@@ -12,13 +12,8 @@ export function CartLineRow({ line, priced, compact }: { line: CartLine; priced?
   const s = line.snapshot;
   return (
     <li className="flex gap-4 py-4">
-      <Link href={`/products/${s.slug}`} className="block h-20 w-20 shrink-0 overflow-hidden rounded-md bg-surface sm:h-24 sm:w-24">
-        {s.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={s.image} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <ProductArt art={s.art} label="" className="h-full w-full" />
-        )}
+      <Link href={`/products/${s.slug}`} className="block h-20 w-20 shrink-0 sm:h-24 sm:w-24">
+        <ProductPhoto src={s.image} alt={s.name} className="h-full w-full rounded-md" padding="p-1.5" />
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-3">
