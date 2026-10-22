@@ -2,15 +2,15 @@ import { redirect } from 'next/navigation';
 import { connectDb } from '@/lib/db';
 import { Order } from '@/models/Order';
 import { applyTransaction } from '@/lib/orders';
-import { hmacValuesFromQuery, paymobConfig, summarizeQuery, verifyHmac } from '@/lib/paymob';
+import { confirmTransaction, hmacValuesFromQuery, summarizeQuery } from '@/lib/paymob';
 import { ButtonLink, Container } from '@/components/ui';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Payment', robots: { index: false } };
 
 // Paymob sends the customer back here with the transaction in a signed query
-// string. A valid signature lets us record the result straight away, without
-// waiting for the webhook.
+// string. A valid signature (or, without a secret, the same transaction read
+// back from Paymob) lets us record the result without waiting for the webhook.
 export default async function PaymentResultPage({
   searchParams,
 }: {
@@ -20,8 +20,8 @@ export default async function PaymentResultPage({
   const q = new URLSearchParams();
   for (const [k, v] of Object.entries(raw)) if (typeof v === 'string') q.set(k, v);
 
-  if (verifyHmac(hmacValuesFromQuery(q), q.get('hmac'), paymobConfig().hmacSecret)) {
-    const tx = summarizeQuery(q);
+  const tx = await confirmTransaction(hmacValuesFromQuery(q), q.get('hmac'), q.get('id') ?? '', () => summarizeQuery(q));
+  if (tx) {
     const result = await applyTransaction(tx, 'redirect');
     if (result.ok) {
       await connectDb();

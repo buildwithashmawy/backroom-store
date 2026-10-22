@@ -9,6 +9,7 @@ export function paymobConfig() {
   return {
     mode,
     apiBase: (process.env.PAYMOB_API_BASE || 'https://accept.paymob.com').replace(/\/$/, ''),
+    apiKey: process.env.PAYMOB_API_KEY || '',
     secretKey: process.env.PAYMOB_SECRET_KEY || '',
     publicKey: process.env.PAYMOB_PUBLIC_KEY || '',
     // In mock mode a fixed local secret signs the simulated callbacks.
@@ -168,6 +169,52 @@ export function verifyHmac(values: string[], received: string | null | undefined
   const expected = Buffer.from(signHmac(values, secret), 'hex');
   const got = Buffer.from(received.toLowerCase(), 'hex');
   return got.length === expected.length && crypto.timingSafeEqual(got, expected);
+}
+
+/**
+ * Reads a transaction straight from Paymob with the account API key. Used to
+ * confirm a callback when no HMAC secret is configured: the data then comes
+ * from Paymob itself, not from the request, so it can be trusted.
+ */
+export async function fetchTransaction(transactionId: string): Promise<unknown | null> {
+  const cfg = paymobConfig();
+  if (cfg.mode !== 'live' || !cfg.apiKey || !/^\d+$/.test(transactionId)) return null;
+  const auth = await fetch(`${cfg.apiBase}/api/auth/tokens`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ api_key: cfg.apiKey }),
+    cache: 'no-store',
+  });
+  const { token } = (await auth.json().catch(() => ({}))) as { token?: string };
+  if (!auth.ok || !token) {
+    console.error('Paymob auth failed', auth.status);
+    return null;
+  }
+  const res = await fetch(`${cfg.apiBase}/api/acceptance/transactions/${transactionId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    console.error('Paymob transaction lookup failed', transactionId, res.status);
+    return null;
+  }
+  return res.json();
+}
+
+/**
+ * Confirms a transaction Paymob reported, by HMAC when a secret is set and by
+ * looking it up through the API otherwise. Returns the trusted transaction.
+ */
+export async function confirmTransaction(
+  values: string[],
+  hmac: string | null | undefined,
+  transactionId: string,
+  fromRequest: () => TransactionSummary,
+): Promise<TransactionSummary | null> {
+  const cfg = paymobConfig();
+  if (cfg.hmacSecret) return verifyHmac(values, hmac, cfg.hmacSecret) ? fromRequest() : null;
+  const obj = await fetchTransaction(transactionId);
+  return obj ? summarizeTransaction(obj) : null;
 }
 
 /** The transaction fields the store keeps, from either a webhook or a redirect. */
