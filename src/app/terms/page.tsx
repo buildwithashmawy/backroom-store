@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PolicyPage } from '@/components/PolicyPage';
-import { fullAddress, site } from '@/lib/site';
+import { fullAddress, registration, site } from '@/lib/site';
 
 export const metadata: Metadata = { title: 'Terms and conditions' };
 
@@ -14,7 +14,7 @@ export default function TermsPage() {
     >
       <h2>Who we are</h2>
       <p>
-        The {site.storeName} is operated by {site.legalName} ({site.commercialRegister}, {site.taxId}), {fullAddress}.
+        The {site.storeName} is operated by {site.legalName}{registration && ` (${registration})`}, {fullAddress}.
         You can reach us at {site.email} or {site.phone}.
       </p>
 

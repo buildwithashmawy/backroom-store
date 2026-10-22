@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { Logo } from './Logo';
 import { categories } from '@/lib/catalog';
-import { fullAddress, site } from '@/lib/site';
+import { fullAddress, registration, site } from '@/lib/site';
 
 const policies = [
   { href: '/terms', label: 'Terms and conditions' },
@@ -61,7 +61,7 @@ export function Footer() {
       <div className="border-t border-line-subtle">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-xs text-fg-muted sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <p>
-            © {new Date().getFullYear()} {site.legalName}. {site.commercialRegister}. {site.taxId}. Prices in Egyptian pounds (EGP).
+            © {new Date().getFullYear()} {site.legalName}.{registration && ` ${registration}.`} Prices in Egyptian pounds (EGP).
           </p>
           <div className="flex items-center gap-3">
             <span>Secure payments by Paymob</span>

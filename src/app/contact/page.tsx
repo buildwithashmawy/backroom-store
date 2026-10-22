@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Container, PageHeader } from '@/components/ui';
-import { fullAddress, site } from '@/lib/site';
+import { fullAddress, registration, site } from '@/lib/site';
 import { ContactForm } from './ContactForm';
 
 export const metadata: Metadata = { title: 'Contact us' };
@@ -38,7 +38,7 @@ export default function ContactPage() {
             </li>
           ))}
           <li className="pt-2 text-sm text-fg-muted">
-            {site.legalName} · {site.commercialRegister} · {site.taxId}
+            {[site.legalName, registration].filter(Boolean).join(' · ')}
           </li>
         </ul>
         <div className="rounded-2xl border border-line-subtle bg-bg-secondary p-6 sm:p-8">
