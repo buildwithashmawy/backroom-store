@@ -1,6 +1,7 @@
 import 'server-only';
 import { connectDb } from './db';
 import { Product } from '@/models/Product';
+import { categories } from './catalog';
 import type { Mode, PricedProduct } from './pricing';
 
 export interface StoreProduct extends PricedProduct {
@@ -44,6 +45,10 @@ function toStoreProduct(p: any): StoreProduct {
   };
 }
 
+// Only active products in a category the store lists are sold, so dropping a
+// category from the catalog takes its products off the store too.
+const visible = { active: true, category: { $in: categories.map((c) => c.slug) } };
+
 export type Sort = 'featured' | 'price_asc' | 'price_desc' | 'name';
 
 export interface ProductQuery {
@@ -55,8 +60,8 @@ export interface ProductQuery {
 
 export async function listProducts(query: ProductQuery = {}): Promise<StoreProduct[]> {
   await connectDb();
-  const filter: Record<string, unknown> = { active: true };
-  if (query.category) filter.category = query.category;
+  const filter: Record<string, unknown> = { ...visible };
+  if (query.category) filter.category = { $in: categories.some((c) => c.slug === query.category) ? [query.category] : [] };
   if (query.mode === 'buy') filter.buyPrice = { $ne: null };
   if (query.mode === 'rent') filter.rentPricePerDay = { $ne: null };
   if (query.q) {
@@ -80,20 +85,20 @@ export async function listProducts(query: ProductQuery = {}): Promise<StoreProdu
 
 export async function getProduct(slug: string): Promise<StoreProduct | null> {
   await connectDb();
-  const doc = await Product.findOne({ slug, active: true }).lean();
+  const doc = await Product.findOne({ slug, ...visible }).lean();
   return doc ? toStoreProduct(doc) : null;
 }
 
 export async function getProductsByIds(ids: string[]): Promise<StoreProduct[]> {
   await connectDb();
   const valid = ids.filter((id) => /^[a-f0-9]{24}$/i.test(id));
-  const docs = await Product.find({ _id: { $in: valid }, active: true }).lean();
+  const docs = await Product.find({ _id: { $in: valid }, ...visible }).lean();
   return docs.map(toStoreProduct);
 }
 
 export async function relatedProducts(product: StoreProduct, limit = 4): Promise<StoreProduct[]> {
   await connectDb();
-  const docs = await Product.find({ category: product.category, active: true, slug: { $ne: product.slug } })
+  const docs = await Product.find({ ...visible, category: product.category, slug: { $ne: product.slug } })
     .limit(limit)
     .lean();
   return docs.map(toStoreProduct);

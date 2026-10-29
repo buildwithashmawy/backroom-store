@@ -7,7 +7,7 @@ import { categories, categoryName } from '@/lib/catalog';
 import { listProducts, type Sort } from '@/lib/products';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { title: 'Shop gear', description: 'Buy or rent cameras, lenses, lighting, audio, grip and drones in Egypt.' };
+export const metadata: Metadata = { title: 'Shop gear', description: 'Buy or rent cameras, lenses, lighting, audio and grip in Egypt.' };
 
 type Params = { category?: string; mode?: string; q?: string; sort?: string };
 

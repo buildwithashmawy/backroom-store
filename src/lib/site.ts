@@ -6,7 +6,7 @@ export const site = {
   storeName: "BackRoom Store",
   tagline: "Buy and rent production gear in Egypt",
   description:
-    "BackRoom is a creative production marketplace in Egypt. Buy or rent cinema cameras, lenses, lighting, audio, grip and drones, delivered across Cairo and Giza.",
+    "BackRoom is a creative production marketplace in Egypt. Buy or rent cinema cameras, lenses, lighting, audio and grip, delivered across Cairo and Giza.",
   legalName: "BackRoom for Creative Production Services LLC",
   // Shown only once filled in, e.g. 'CR No. 123456' and 'Tax ID 123-456-789'.
   commercialRegister: "",

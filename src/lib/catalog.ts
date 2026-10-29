@@ -7,7 +7,6 @@ export const categories = [
   { slug: 'lighting', name: 'Lighting', blurb: 'LED, COB and RGB fixtures' },
   { slug: 'audio', name: 'Audio', blurb: 'Mics, wireless and recorders' },
   { slug: 'grip', name: 'Grip & Support', blurb: 'Gimbals, tripods and stands' },
-  { slug: 'drones', name: 'Drones', blurb: 'Aerial and FPV' },
   { slug: 'monitors', name: 'Monitors', blurb: 'On-camera monitors and recorders' },
   { slug: 'accessories', name: 'Accessories', blurb: 'Power, media and essentials' },
 ] as const;

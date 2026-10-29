@@ -539,53 +539,6 @@ export const seedProducts: SeedProduct[] = [
     rentalUnits: 12,
   },
 
-  // Drones
-  {
-    slug: 'dji-mavic-3-pro',
-    name: 'DJI Mavic 3 Pro Fly More Combo',
-    brand: 'DJI',
-    category: 'drones',
-    art: 'drone',
-    summary: 'Triple-camera drone with a Hasselblad 4/3 sensor, 10-bit D-Log and 43 minutes of flight.',
-    description: [
-      'Three focal lengths (24, 70 and 166mm) let you frame aerials without moving the drone. Flying a drone in Egypt requires permits: we can advise on the process.',
-    ],
-    specs: [
-      ['Main camera', '4/3 CMOS Hasselblad, 5.1K'],
-      ['Flight time', 'Up to 43 minutes'],
-      ['Transmission', 'O3+, up to 15 km'],
-    ],
-    inTheBox: ['Drone', 'DJI RC Pro', '3 × batteries', 'Charging hub', 'ND filter set', 'Bag'],
-    buyPrice: 148000,
-    rentPricePerDay: 3000,
-    deposit: 40000,
-    stock: 1,
-    rentalUnits: 2,
-    warranty: '1-year DJI warranty.',
-    featured: true,
-  },
-  {
-    slug: 'dji-mini-4-pro',
-    name: 'DJI Mini 4 Pro',
-    brand: 'DJI',
-    category: 'drones',
-    art: 'drone',
-    summary: 'Under-250g drone with 4K 60p HDR, omnidirectional obstacle sensing and vertical shooting.',
-    description: ['Light, quick to deploy and good for social content and behind-the-scenes aerials.'],
-    specs: [
-      ['Camera', '1/1.3" CMOS, 4K 100p'],
-      ['Weight', 'Under 249 g'],
-      ['Flight time', 'Up to 34 minutes'],
-    ],
-    inTheBox: ['Drone', 'DJI RC 2', 'Battery', 'Propellers', 'Cable'],
-    buyPrice: 52000,
-    rentPricePerDay: 1200,
-    deposit: 15000,
-    stock: 2,
-    rentalUnits: 2,
-    warranty: '1-year DJI warranty.',
-  },
-
   // Monitors
   {
     slug: 'atomos-ninja-v-plus',

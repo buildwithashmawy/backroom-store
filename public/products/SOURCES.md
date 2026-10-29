@@ -26,8 +26,6 @@ Each product has `<slug>.jpg` and, where a second good angle exists, `<slug>-2.j
 | sachtler-flowtech-75-ace-xl | https://www.sachtler.com/en/product/system-ace-xl-flowtech75-ms-mk-ii/ | Maker. Shows the current Ace XL Mk II flowtech 75 MS system. |
 | edelkrone-slider-plus-pro | https://edelkrone.com/products/sliderplus | Maker. Shows the current SliderPLUS PRO (v5). Main is the Compact size, -2 is the Long. |
 | avenger-c-stand-kit | https://cathayphoto.com.sg/lighting-studio/manfrotto-a2033lkit-avenger-c-stand-kit-33-with-sliding-leg | Shows the Avenger A2033LKIT C-stand kit with a 40" grip arm and grip head. |
-| dji-mavic-3-pro | https://store.dji.com/product/dji-mavic-3-pro | DJI Store. |
-| dji-mini-4-pro | https://store.dji.com/product/dji-mini-4-pro | DJI Store. |
 | atomos-ninja-v-plus | https://thepixelhub.com/products/atomos-ninja-v-5-2-8k-hdmi-h-265-raw-recording-monitor-atomnjvpl1 | Atomos product shot via retailer (ATOMNJVPL1). |
 | smallhd-indie-7 | https://smallhd.com/products/indie-7 | Maker. |
 | sony-cfexpress-a-tough-320gb | https://store.sony.com.au/memory-cards/CEAG320T.html | Sony store (CEA-G320T). |

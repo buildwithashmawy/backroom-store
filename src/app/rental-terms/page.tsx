@@ -59,7 +59,6 @@ export default function RentalTermsPage() {
           you pay the difference against the repair invoice.
         </li>
         <li>Lost or stolen gear is charged at its current replacement value. Theft must be reported to the police and to us within 24 hours.</li>
-        <li>Drones must be flown within Egyptian law, with any permits the shoot requires. Fines and confiscation are the renter&apos;s responsibility.</li>
       </ul>
 
       <h2>Use</h2>
